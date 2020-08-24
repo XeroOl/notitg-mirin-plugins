@@ -3,6 +3,7 @@ This is the repository for plugins that are compatible with the [notitg-mirin](h
 
 ## Plugin list:
 * [spellcards](spellcards.md) by [XeroOl](https://github.com/XeroOl/)
+* [swap](swap.md) by [XeroOl](https://github.com/XeroOl/)
 
 ## Installing a plugin
 * Create a `/plugins/` folder inside the template
