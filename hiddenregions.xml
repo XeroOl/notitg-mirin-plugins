@@ -1,18 +1,17 @@
-<!--
-	hiddenregions.xml
-	made by oatmealine
-
-	lets you add hidden regions to a player as a function
-
-	hide {beat, duration, [column] [plr]}
-	```lua
-	hide
-	{0, 2, plr = 1, column = {0, 1, 2}}
-	{2, 2, plr = 2, column = {0, 1, 2}}
-	```
--->
-
 <Layer Type = "Quad" LoadCommand = "%xero(function(self)
+	--[[
+		hiddenregions.xml
+		made by oatmealine
+
+		lets you add hidden regions to a player as a function
+
+		hide {beat, duration, [column] [plr]}
+		```lua
+		hide
+		{0, 2, plr = 1, column = {0, 1, 2}}
+		{2, 2, plr = 2, column = {0, 1, 2}}
+	]]
+	
 	local hiddenregions = {}
 	
 	local function contains(table, element)
@@ -34,7 +33,7 @@
 			local start = table[1]
 			local dur = table[2]
 
-			local players = table.plr or plr or {1, 2, 3, 4}
+			local players = table.plr or rawget(xero, 'plr') or {1, 2}
 			if type(players) == 'number' then players = {players} end
 
 			local column = table.column or {0, 1, 2, 3}
@@ -60,8 +59,13 @@
 	end
 	
 	func {0, function()
-		local res = {{}, {}, {}, {}, {}, {}, {}, {}} -- one for each player
-
+		local res = {}
+		
+		-- one for each player
+		for pn = 1, max_pn do
+			res[pn] = {}
+		end
+		
 		for c = 0, 3 do
 			for _,r in ipairs(hiddenregions) do
 				if contains(r[3], c) then
