@@ -21,8 +21,9 @@
 	end
 	lambda()
 	function swap(t)
+		local which = t[4]
 		for col = 0, 3 do
-			t[4 + col * 2] = swaps[t[4]][col]
+			t[4 + col * 2] = swaps[which][col]
 			t[5 + col * 2] = movex[col]
 		end
 		ease(t, 1, 'swap')
