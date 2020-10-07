@@ -14,4 +14,4 @@ This is the repository for plugins that are compatible with the [notitg-mirin](h
 * Create a plugin.
 * Ensure your plugin works properly.
 * Write a documentation file that describes how to use the plugin.
-* Submit a pull request that contains the plugin and its documentation.
+* Submit a pull request, or send the files to XeroOl on discord.
