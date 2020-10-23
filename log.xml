@@ -1,0 +1,49 @@
+<Layer LoadCommand = "%xero(function(self)
+	log = {}
+	log.level = {
+		trace = 1,
+		debug = 2,
+		info  = 3,
+		warn  = 4,
+		error = 5,
+		fatal = 6,
+	}
+	log.format = '[%f %L]'
+	local function readerror(_, err)
+		return string.sub(err, 1, -2)
+	end
+	for name, level in pairs(log.level) do
+		local name, level = name, level
+		log[name] = function(...)
+			if log.cur_level <= level then
+				local msg = log.format
+				local fileinfo = readerror(pcall(error, '', 3))
+				msg = string.gsub(msg, '%%b', string.format('%.3f', GAMESTATE:GetSongBeat()))
+				msg = string.gsub(msg, '%%t', string.format('%.3f', GAMESTATE:GetSongTime()))
+				msg = string.gsub(msg, '%%l', name)
+				msg = string.gsub(msg, '%%L', string.upper(name))
+				msg = string.gsub(msg, '%%f', string.gsub(fileinfo, '.*[\\/]', ''))
+				msg = string.gsub(msg, '%%F', fileinfo)
+				print(msg, unpack(arg))
+			end
+		end
+	end
+	log.level.all = 1
+	log.level.off = 9e9
+	function log.set(level)
+		log.cur_level = level
+	end
+	function log.seteditor(level)
+		if GAMESTATE:IsEditMode() then
+			log.cur_level = level
+		end
+	end
+	function log.setgameplay(level)
+		if not GAMESTATE:IsEditMode() then
+			log.cur_level = level
+		end
+	end
+	-- default logging levels
+	log.set(log.level.error)
+	log.seteditor(log.level.trace)
+end)" />

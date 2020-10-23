@@ -1,3 +1,4 @@
+hiddenregions
+log
 swap
 spellcards
-hiddenregions
