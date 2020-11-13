@@ -2,3 +2,4 @@ hiddenregions
 log
 swap
 spellcards
+rand

@@ -1,0 +1,43 @@
+<Layer OnCommand = "%xero(function(self)
+	local state = 1
+	
+	rand = {}
+	--- rand
+	-- rand.bool() returns true or false
+	function rand.bool(p)
+		return rand.float() < (p or 0.5)
+	end
+	
+	-- rand.float() returns a float x where 0.0 <= x < 1.0
+	-- rand.float(max) returns a float x where 0.0 <= x < max
+	-- rand.float(min, max) returns a float x where min <= x < max
+	function rand.float(a, b)
+		state = state + 1
+		local r = math.abs((math.sin(632459.86 * state) * 1023341.55) % 1)
+		if not a then
+			return r
+		elseif not b then
+			return r * a
+		else
+			return r * (a-b) + b
+		end
+	end
+	
+	-- rand.int(n) returns an integer x where 1 <= x <= n
+	-- rand.int(low, high) returns an number x where low <= x <= high and x = low + k for some integer k
+	-- rand.int(low, high, step) returns a number k where low <= k <= high and x = low + step*k for some integer k
+	function rand.int(a, b, c)
+		if not b then
+			a, b = 1, a
+		end
+		c = c or 1
+		return math.floor(rand.float() * (b - a) / c) * c + a
+	end
+	
+	-- rand.seed(x) sets the seed to the number x
+	function rand.seed(x)
+		state = x
+	end
+	
+	return rand
+end)" />

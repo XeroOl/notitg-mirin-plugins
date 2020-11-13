@@ -6,7 +6,7 @@ This is the repository for plugins that are compatible with the [notitg-mirin](h
 * [swap](swap.md) by [XeroOl](https://github.com/XeroOl/)
 * [hiddenregions](hiddenregions.md) by [oatmealine](https://github.com/oatmealine/)
 * [log](log.md) by [XeroOl](https://github.com/XeroOl/)
-
+* [rand](rand.md) by [XeroOl](https://github.com/XeroOl/)
 ## Installing a plugin
 * Create a `/plugins/` folder inside the template
 * Place the plugin's `.xml` file into the folder
