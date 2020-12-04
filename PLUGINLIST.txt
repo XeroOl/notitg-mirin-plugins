@@ -1,5 +1,6 @@
 hiddenregions
 log
+mirror
 swap
 spellcards
 rand

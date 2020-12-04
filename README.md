@@ -7,6 +7,7 @@ This is the repository for plugins that are compatible with the [notitg-mirin](h
 * [hiddenregions](hiddenregions.md) by [oatmealine](https://github.com/oatmealine/)
 * [log](log.md) by [XeroOl](https://github.com/XeroOl/)
 * [rand](rand.md) by [XeroOl](https://github.com/XeroOl/)
+* [mirror](mirror.md) by [Sudospective](https://github.com/Sudospective/)
 ## Installing a plugin
 * Create a `/plugins/` folder inside the template
 * Place the plugin's `.xml` file into the folder
