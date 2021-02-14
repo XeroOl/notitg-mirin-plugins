@@ -7,15 +7,18 @@
 
         USAGE
         Ease:
-        mirror {beat, len, ease, percent, mod}
+        mirror {beat, len, ease, percent, mod, mode = ease or nil}
         Add:
-        mirroradd {beat, len, ease, percent, mod}
+        mirror {beat, len, ease, percent, mod, mode = add}
+        Set:
+        mirror {beat, percent, mod, mode = set}
 
         Any mod, alias, and node is valid.
 
         TODO
         - Support for more than two players
         - Support for specific degree of mirror offset
+        - Support for error handling
     --]]
     function mirror(t)
         local tcopy = copy(t)
@@ -24,20 +27,9 @@
         for i = 4, #tcopy, 2 do
             tcopy[i] = -tcopy[i]
         end
-        ease(t, 1, 'mirror')
-        ease(tcopy, 1, 'mirror')
+        local mode = t.mode or ease
+        mode(t, 1, 'mirror')
+        mode(tcopy, 1, 'mirror')
         return mirror
-    end
-
-    function mirroradd(t)
-        local tcopy = copy(t)
-        t.plr = 1
-        tcopy.plr = 2
-        for i = 4, #tcopy, 2 do
-            tcopy[i] = -tcopy[i]
-        end
-        add(t, 1, 'mirror')
-        add(tcopy, 1, 'mirror')
-        return mirroradd
     end
 end)" />
