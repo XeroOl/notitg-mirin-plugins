@@ -22,12 +22,17 @@
     --]]
     function mirror(t)
         local tcopy = copy(t)
+        local mode = (
+            type(tcopy[3]) == 'string' and set 
+            or t.mode 
+            or rawget(xero, 'mode') 
+            or ease
+        )
         t.plr = 1
         tcopy.plr = 2
-        for i = 4, #tcopy, 2 do
+        for i = mode == set and 2 or 4, #tcopy, 2 do
             tcopy[i] = -tcopy[i]
         end
-        local mode = t.mode or ease
         mode(t, 1, 'mirror')
         mode(tcopy, 1, 'mirror')
         return mirror

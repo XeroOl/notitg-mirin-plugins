@@ -3,9 +3,10 @@
 sometimes you only just need the whole thing gone
 here is the thing to help you with those times
 
-Features:
-- 14 lines of code
+## Features
+- ~~14~~ 10 lines of code
 - literally fits in a 5-pack of spearmint gum
+- doesnt support columns
 
 Usage:
 ```lua
@@ -35,6 +36,7 @@ Usage:
     ]]--
 ```
 
-To-Do:
-- figure out how to make it 13 lines of code
+## To-Do
+- not worry about it being bigger than 9 lines of code
+- confirm it does in fact fit in a 5-pack of gum
 - not support columns
