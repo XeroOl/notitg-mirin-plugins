@@ -1,6 +1,7 @@
 hiddenregions
 log
 mirror
-swap
-spellcards
 rand
+simpleregions
+spellcards
+swap
