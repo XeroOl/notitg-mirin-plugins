@@ -26,8 +26,8 @@ print(rand.int(10)) -- a number between 1 and 10
 print(rand.int(5, 10, 0.5)) -- a multiple of 0.5 between 5 and 10, (inclusive)
 ```
 
-## `rand.setseed`
+## `rand.seed`
 ```lua
-rand.setseed(number)
+rand.seed(number)
 ```
 Sets the seed to a specific value. If you don't like the numbers you're getting from the `rand` plugin, you can set the seed to a different number to "reroll" and get different values.
