@@ -18,7 +18,7 @@
 			-- Returns the current state of `AutoUpadate`
 			GetAutoUpdate() --> boolean
 
-			-- Sets the `AutoUpdate` rate of the AFT's texture, minimum value of 1 fps
+			-- Sets the `AutoUpdate` rate of the AFT's texture, minimum value of 1 FPS
 			SetFPS(float) --> Void
 
 			-- Returns the current FPS of the AFT
@@ -27,7 +27,7 @@
 			-- Forces the AFT to update its texture
 			update() --> Void
 
-	]]
+	--]]
 
 	-------------------------
 	----Plugin User Guide----
@@ -55,7 +55,7 @@
 		That is all you need to know to use the basic functionality of this plugin.
 
 		This plugin's other main feature is the ability to manually update the AFT using a method call.
-		Typically what you will want to do, is turn auto updating off via the `AutoUpdate` method,
+		Typically you'll want to turn auto updating off via the `AutoUpdate` method,
 		then you can manually tell it to update whenever you want using the `update` method.
 
 		```
@@ -176,7 +176,7 @@
 		end
 	end
 
-	function LimitAft:SetFPS(fps) -- Sets the `AutoUpdate` rate of the AFT's texture, minimum value of 1 fps
+	function LimitAft:SetFPS(fps) -- Sets the `AutoUpdate` rate of the AFT's texture, minimum value of 1 FPS
 		if type(fps) == 'number' then
 			self._fps = math.max(1,fps)
 		else
