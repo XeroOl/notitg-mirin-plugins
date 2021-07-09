@@ -3,30 +3,30 @@
 A plugin for limiting the refresh rate of AFTs,
 to make them consistent across variable frame rates.
 
----
-
 ## Documentation
 
-###### Globals
+Globals
 ```lua
 -- Takes in an AFT and converts it into a LimitAft Object
 LimitAft(AFT) --> LimitAft
 ```
-###### LimitAft Methods
+LimitAft Methods
 ```lua
 -- Toggles the auto updating of the AFT's texture
 AutoUpdate(boolean) --> Void
+
 -- Returns the current state of `AutoUpadate`
 GetAutoUpdate() --> boolean
+
 -- Sets the `AutoUpdate` rate of the AFT's texture, minimum value of 1 FPS
 SetFPS(float) --> Void
+
 -- Returns the current FPS of the AFT
 GetFPS() --> float
+
 -- Forces the AFT to update its texture
 update() --> Void
 ```
-
----
 
 ## Plugin User Guide
 
@@ -50,14 +50,16 @@ then you can manually tell it to update whenever you want using the `update` met
 ```lua
 -- This function disables auto updating on `MyAft` at beat 0
 func{0,function()
-	MyAft:AutoUpdate(false)
+    MyAft:AutoUpdate(false)
 }
+
 -- This will manually update `MyAft` on beats 1, 2, 3, and 4
 for i = 1,4 do
-	func{i,function()
-		MyAft:update()
-	end}
+    func{i,function()
+        MyAft:update()
+    end}
 end
+
 -- This function re-enables auto updating on `MyAft` at beat 5
 func{5,function()
 	MyAft:AutoUpdate(true)
@@ -70,24 +72,30 @@ Finally, here is a complete example of how one might use everything in this plug
 ```lua
 -- Limit `MyAft`
 LimitAft(MyAft)
+
 -- Do the default sprite setup on `MySprite`
 sprite(MySprite)
+
 -- Tell the sprite which AFT to get its texture from
 MySprite:SetTexture(MyAft:GetTexture())
+
 -- Set FPS to 30
 MyAft:SetFPS(30)
+
 -- Disable auto updating on beat 12
 func{12,function()
-	MyAft:AutoUpdate(false)
+    MyAft:AutoUpdate(false)
 end}
+
 -- Manually update the AFT from beats 12 to 24 (inclusive) every 0.5 beats
 for i = 12,24,0.5 do
-	func{i,function()
-		MyAft:update()
-	end}
+    func{i,function()
+        MyAft:update()
+    end}
 end
+
 -- Re-enable auto updating on beat 24
 func{24,function()
-	MyAft:AutoUpate(true)
+    MyAft:AutoUpate(true)
 end}
 ```
