@@ -1,4 +1,4 @@
-<Layer LoadCommand = "%xero(function(self)
+<Mirror Version = "1.3" Author = "Sudospective" LoadCommand = "%xero(function(self)
     --[[
         MIRROR
         Created by Sudospective
