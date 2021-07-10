@@ -3,13 +3,14 @@ This is the repository for plugins that are compatible with the [notitg-mirin](h
 
 ## Plugin list:
 * [hiddenregions](hiddenregions.md) by [oatmealine](https://github.com/oatmealine/)
+* [limitaft](limitaft.md) by [Chegg](https://github.com/ChocoboGamer/)
 * [log](log.md) by [XeroOl](https://github.com/XeroOl/)
 * [mirror](mirror.md) by [Sudospective](https://github.com/Sudospective/)
 * [rand](rand.md) by [XeroOl](https://github.com/XeroOl/)
 * [simpleregions](simpleregions.md) by [Sudospective](https://github.com/Sudospective/)
 * [spellcards](spellcards.md) by [XeroOl](https://github.com/XeroOl/)
 * [swap](swap.md) by [XeroOl](https://github.com/XeroOl/)
-* [limitaft](limitaft.md) by [Chegg](https://github.com/ChocoboGamer/)
+
 ## Installing a plugin
 * Create a `/plugins/` folder inside the template
 * Place the plugin's `.xml` file into the folder
