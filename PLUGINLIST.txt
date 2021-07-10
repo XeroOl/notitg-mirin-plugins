@@ -1,9 +1,8 @@
 hiddenregions
+limitaft
 log
 mirror
 rand
 simpleregions
 spellcards
 swap
-limitaft
-
