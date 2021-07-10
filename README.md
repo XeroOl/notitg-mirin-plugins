@@ -6,7 +6,7 @@ This is the repository for plugins that are compatible with the [notitg-mirin](h
 * [log](log.md) by [XeroOl](https://github.com/XeroOl/)
 * [mirror](mirror.md) by [Sudospective](https://github.com/Sudospective/)
 * [rand](rand.md) by [XeroOl](https://github.com/XeroOl/)
-* [simpleregions](simpleregions) by [Sudospective](https://github.com/Sudospective/)
+* [simpleregions](simpleregions.md) by [Sudospective](https://github.com/Sudospective/)
 * [spellcards](spellcards.md) by [XeroOl](https://github.com/XeroOl/)
 * [swap](swap.md) by [XeroOl](https://github.com/XeroOl/)
 * [limitaft](limitaft.md) by [Chegg](https://github.com/ChocoboGamer/)
