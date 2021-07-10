@@ -87,6 +87,7 @@
 		```
 			-- Limit `MyAft`
 			LimitAft(MyAft)
+						  
 			-- Do the default sprite setup on `MySprite`
 			sprite(MySprite)
 
