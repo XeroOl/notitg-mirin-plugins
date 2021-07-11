@@ -1,4 +1,4 @@
-<Layer LoadCommand = "%xero(function(self)
+<SimpleRegions Version = "1.4" Author = "Sudospective" LoadCommand = "%xero(function(self)
     function region(t)
         local pn = t.plr or get_plr()
         if type(pn) == 'number' then pn = {pn} end
