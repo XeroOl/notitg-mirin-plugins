@@ -4,5 +4,6 @@ log
 mirror
 rand
 simpleregions
+simplemults
 spellcards
 swap
