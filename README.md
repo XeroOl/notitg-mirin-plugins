@@ -13,7 +13,7 @@ This is the repository for plugins that are compatible with the [notitg-mirin](h
 * [swap](swap.md) by [XeroOl](https://github.com/XeroOl/)
 
 ## Installing a plugin
-* Create a `/plugins/` folder inside the template
+* Create a `/plugins/` folder inside the song folder (i.e., `Songs/Group name/Song name/plugins`)
 * Place the plugin's `.xml` file into the folder
 
 ## Submit your plugin here!
