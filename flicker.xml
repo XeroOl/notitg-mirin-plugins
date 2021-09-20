@@ -1,0 +1,112 @@
+<Plugin Version = "1.0-rc3" Author = "Sudospective"
+	LoadCommand = "%xero(function(self)
+		--[[
+			This will flicker a mod at 60 FPS between two percents, and
+			set it back to its original value after a specified length.
+			Usage:
+				flicker {beat, length, percent1, percent2, mod, pn or nil, fps or nil}
+		]]
+		local function centirad(x)
+			return x * math.pi/1.8
+		end
+		function flicker(t)
+			local old_percs = {{}, {}}
+			local plr = t.plr or get_plr()
+			if type(plr) == 'number' then plr = {plr} end
+			for i = 5, #t, 3 do
+				for _, pn in ipairs(plr) do
+					old_percs[pn][t[i]] = get(t[i], pn)
+					set {t[1] + t[2], old_percs[pn][t[i]], t[i]}
+				end
+			end
+			local new_t = {t[1], t[2], function(beat, poptions)
+				for i = 3, #t, 3 do
+					local perc
+					local mod = t[i + 2]
+					if (GAMESTATE:GetSongTime() * (t.fps or 60)) % 2 < 1 then
+						perc = t[i + 1]
+					else
+						perc = t[i]
+					end
+					for _, pn in ipairs(plr) do
+						poptions[pn][mod] = perc
+					end
+				end
+			end}
+			func(new_t, 1, 'flicker')
+			return flicker
+		end
+		-- sugarkill {beat, len, minstealth or nil, maxstealth or nil, fps or nil}
+		function sugarkill(t)
+			local plr = t.plr or get_plr()
+			local mode = t.mode or 'normal'
+			t[3] = t[3] or 50
+			t[4] = t[4] or 90
+			t[5] = t[5] or 60
+			if type(plr) == 'number' then plr = {plr} end
+			set {t[1] + t[2],
+				0, 'stealth',
+				0, 'invert',
+				0, 'flip',
+			}
+			if mode == 'confusion' then
+				set {t[1] + t[2],
+					0, 'confusionoffset0',
+					0, 'confusionoffset1',
+					0, 'confusionoffset2',
+					0, 'confusionoffset3',
+				}
+			end
+			local new_t = {t[1], t[2], function(beat, poptions)
+				local timing = GAMESTATE:GetSongTime() * (t.fps or 60)
+				local stealth = 0
+				local invert = 0
+				local flip = 0
+				local col = {0, 0, 0, 0}
+				if timing % 4 < 1 then
+					stealth = t[4]
+					invert = 100
+					if mode == 'confusion' then
+						col[1] = centirad(-90)
+						col[2] = centirad(90)
+						col[3] = centirad(90)
+						col[4] = centirad(-90)
+					end
+				elseif timing % 4 < 2 then
+					stealth = t[4]
+					flip = 100
+					if mode == 'confusion' then
+						for i = 1, #col do
+							col[i] = centirad(180)
+						end
+					end
+				elseif timing % 4 < 3 then
+					stealth = t[4]
+					flip = 100 -- rudl
+					invert = -100 -- urld
+					if mode == 'confusion' then
+						col[1] = centirad(90)
+						col[2] = centirad(-90)
+						col[3] = centirad(-90)
+						col[4] = centirad(90)
+					end
+				else
+					stealth = t[3]
+				end
+				for _, pn in ipairs(plr) do
+					poptions[pn].stealth = stealth
+					poptions[pn].invert = invert
+					poptions[pn].flip = flip
+					if mode == 'confusion' then
+						poptions[pn].confusionoffset0 = col[1]
+						poptions[pn].confusionoffset1 = col[2]
+						poptions[pn].confusionoffset2 = col[3]
+						poptions[pn].confusionoffset3 = col[4]
+					end
+				end
+			end}
+			func(new_t, 1, 'sugarkill')
+			return sugarkill
+		end
+	end)"
+/>
