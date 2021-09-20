@@ -8,11 +8,12 @@ This is the repository for plugins that are compatible with the [notitg-mirin](h
 * [mirror](mirror.md) by [Sudospective](https://github.com/Sudospective/)
 * [rand](rand.md) by [XeroOl](https://github.com/XeroOl/)
 * [simpleregions](simpleregions.md) by [Sudospective](https://github.com/Sudospective/)
+* [simplemults](simplemults.md) by [sorae](https://github.com/soraeee)
 * [spellcards](spellcards.md) by [XeroOl](https://github.com/XeroOl/)
 * [swap](swap.md) by [XeroOl](https://github.com/XeroOl/)
 
 ## Installing a plugin
-* Create a `/plugins/` folder inside the template
+* Create a `/plugins/` folder inside the song folder (i.e., `Songs/Group name/Song name/plugins`)
 * Place the plugin's `.xml` file into the folder
 
 ## Submit your plugin here!
