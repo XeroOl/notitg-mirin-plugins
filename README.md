@@ -2,6 +2,7 @@
 This is the repository for plugins that are compatible with the [notitg-mirin](https://github.com/XeroOl/notitg-mirin/) template.
 
 ## Plugin list:
+* [flicker](flicker.md) by [Sudospective](https://github.com/Sudospective/)
 * [hiddenregions](hiddenregions.md) by [oatmealine](https://github.com/oatmealine/)
 * [limitaft](limitaft.md) by [Chegg](https://github.com/ChocoboGamer/)
 * [log](log.md) by [XeroOl](https://github.com/XeroOl/)
