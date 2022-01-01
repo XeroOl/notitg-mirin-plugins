@@ -1,10 +1,10 @@
-<Plugin Version = "1.0-rc3" Author = "Sudospective"
+<Plugin Version = "1.1" Author = "Sudospective"
 	LoadCommand = "%xero(function(self)
 		--[[
 			This will flicker a mod at 60 FPS between two percents, and
 			set it back to its original value after a specified length.
 			Usage:
-				flicker {beat, length, percent1, percent2, mod, pn or nil, fps or nil}
+				flicker {beat, length, percent1, percent2, mod, plr = pn or nil, fps = fps or nil}
 		]]
 		local function centirad(x)
 			return x * math.pi/1.8
@@ -13,12 +13,6 @@
 			local old_percs = {{}, {}}
 			local plr = t.plr or get_plr()
 			if type(plr) == 'number' then plr = {plr} end
-			for i = 5, #t, 3 do
-				for _, pn in ipairs(plr) do
-					old_percs[pn][t[i]] = get(t[i], pn)
-					set {t[1] + t[2], old_percs[pn][t[i]], t[i]}
-				end
-			end
 			local new_t = {t[1], t[2], function(beat, poptions)
 				for i = 3, #t, 3 do
 					local perc
@@ -36,13 +30,12 @@
 			func(new_t, 1, 'flicker')
 			return flicker
 		end
-		-- sugarkill {beat, len, minstealth or nil, maxstealth or nil, fps or nil}
+		-- sugarkill {beat, len, minstealth or nil, maxstealth or nil, fps = fps or nil, mode = mode or nil}
 		function sugarkill(t)
 			local plr = t.plr or get_plr()
 			local mode = t.mode or 'normal'
 			t[3] = t[3] or 50
 			t[4] = t[4] or 90
-			t[5] = t[5] or 60
 			if type(plr) == 'number' then plr = {plr} end
 			set {t[1] + t[2],
 				0, 'stealth',
