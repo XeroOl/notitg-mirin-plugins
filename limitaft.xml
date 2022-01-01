@@ -1,4 +1,4 @@
-<LimitAft Version="1.0" Author="Chegg" OnCommand="%xero(function(self)
+<LimitAft Version="1.1" Author="Chegg" OnCommand="%xero(function(self)
 						   
 	---------------------
 	----Documentation----
@@ -15,10 +15,10 @@
 			-- Toggles the auto updating of the AFT's texture
 			AutoUpdate(boolean) --> Void
 
-			-- Returns the current state of `AutoUpadate`
+			-- Returns the current state of `AutoUpdate`
 			GetAutoUpdate() --> boolean
 
-			-- Sets the `AutoUpdate` rate of the AFT's texture, minimum value of 1 FPS
+			-- Sets the `AutoUpdate` rate of the AFT's texture, minimum value of 1 fps
 			SetFPS(float) --> Void
 
 			-- Returns the current FPS of the AFT
@@ -27,7 +27,7 @@
 			-- Forces the AFT to update its texture
 			update() --> Void
 
-	--]]
+	]]
 
 	-------------------------
 	----Plugin User Guide----
@@ -55,7 +55,7 @@
 		That is all you need to know to use the basic functionality of this plugin.
 
 		This plugin's other main feature is the ability to manually update the AFT using a method call.
-		Typically you'll want to turn auto updating off via the `AutoUpdate` method,
+		Typically what you will want to do, is turn auto updating off via the `AutoUpdate` method,
 		then you can manually tell it to update whenever you want using the `update` method.
 
 		```
@@ -87,7 +87,6 @@
 		```
 			-- Limit `MyAft`
 			LimitAft(MyAft)
-						  
 			-- Do the default sprite setup on `MySprite`
 			sprite(MySprite)
 
@@ -177,7 +176,7 @@
 		end
 	end
 
-	function LimitAft:SetFPS(fps) -- Sets the `AutoUpdate` rate of the AFT's texture, minimum value of 1 FPS
+	function LimitAft:SetFPS(fps) -- Sets the `AutoUpdate` rate of the AFT's texture, minimum value of 1 fps
 		if type(fps) == 'number' then
 			self._fps = math.max(1,fps)
 		else
@@ -256,10 +255,11 @@
 				aft._frameuptime = aft._frameuptime % aft._framedelay
 				aft._framedelay = 1/aft._fps
 				if not aft._hide and aft._autoupdate then
-					aft._framewait = 1
+					aft._framewait = 2
 					aft._actor:hidden(0)
 				end
-			elseif aft._framewait > 0 then -- Stop Updating the frame once it's been updated
+			end
+			if aft._framewait > 0 then -- Stop Updating the frame once it's been updated
 				aft._framewait = aft._framewait - 1
 				if aft._framewait == 0 then
 					aft._actor:hidden(1)
