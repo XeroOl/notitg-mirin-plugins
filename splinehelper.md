@@ -7,7 +7,7 @@ Load spline helper plugin:
 ```lua
 local spline=require('splinehelper')
 ```
-## spline.set:
+### spline.set:
 
 ```lua 
 spline.set{axis,offset,value,offset,value,...,col=-1,plr={1,2},speed=-1}
@@ -15,24 +15,42 @@ spline.set{axis,offset,value,offset,value,...,col=-1,plr={1,2},speed=-1}
 spline.set{axis,{{offset,value},{offset,value},...},col=-1,plr={1,2},speed=-1}
 ```
 
-## spline.reset:
+### spline.reset:
 
 Apparently spline resets with the column set to -1 don't work, you can have col set to -1 and it automatically converts to {0,1,2,3} in this case.
 ```lua
 spline.reset{axis,col={0,1,2,3},plr={1,2}}
 ```
 
-col, plr, and speed are optional, defaults are as you see them set here, unless plr is set outside of the call, in which case it uses whatever it was set to.
+---
 
-axis can be a table or a single value, if no axis is defined for reset, it resets all splines.
+For both set and reset, col, plr, and speed are optional parameters, defaulting to the values shown above.
 
-so for example:
+Axes:
+* X/Y/Z
+* RotX/RotY/RotZ
+* Size
+* Skew
+* Stealth
+
+Some have aliases that point to them for ease of use:
+
+* X/Y/Z: MoveX/Y/Z
+* RotX/RotY/RotZ: RotationX/Y/Z or RX/Y/Z
+* Size: Tiny
+
+Case sensitivity doesn't matter, as the code uses string.lower on the axes anyway.
+
+Maximum amount of points allowed is 40
+
+## Examples:
+
 ```lua
 --reset all splines on both players
 spline.reset{}
 
 --reset all splines on down column
-spline.reset(col=1)
+spline.reset{col=1}
 
 --reset x splines on player 1
 spline.reset{'x',plr=1}
@@ -41,12 +59,7 @@ spline.reset{'x',plr=1}
 spline.reset{{'x','y','z'},plr=2}
 ```
 
-Also, the case sensitivity for the axis doesn't matter as it corrects it in the code, so for example you don't have to type 'RotX', you can just type 'rotx', or even 'rOTx' if you want
 
-There are also a couple aliases rotx, roty, rotz, and one other name for size
-
-'rx/y/z' and 'rotationx/y/z' as axis point to RotX/Y/Z
-'tiny' as axis points to Size
 
 Use definemod, func, etc to ease splines, or set at a certain beat.
 You can also just run it outside of a func to set default splines or reset all at the start (cause it seems like in editor splines sometimes don't get reset???)
@@ -81,5 +94,3 @@ func{0,function()
     spline.set{'y',splineY}
 end}
 ```
-
-It also automatically ignores points over index of 40 in the points list.
