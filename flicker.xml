@@ -27,7 +27,7 @@
 					end
 				end
 			end}
-			func(new_t, 1, 'flicker')
+			perframe(new_t, 1, 'flicker')
 			return flicker
 		end
 		-- sugarkill {beat, len, minstealth or nil, maxstealth or nil, fps = fps or nil, mode = mode or nil}
@@ -98,7 +98,7 @@
 					end
 				end
 			end}
-			func(new_t, 1, 'sugarkill')
+			perframe(new_t, 1, 'sugarkill')
 			return sugarkill
 		end
 	end)"
