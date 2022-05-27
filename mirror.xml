@@ -1,4 +1,4 @@
-<Mirror Version = "1.3" Author = "Sudospective" LoadCommand = "%xero(function(self)
+<Mirror Version = "1.4" Author = "Sudospective" LoadCommand = "%xero(function(self)
     --[[
         MIRROR
         Created by Sudospective
@@ -21,13 +21,13 @@
         - Support for error handling
     --]]
     function mirror(t)
-        local tcopy = copy(t)
         local mode = (
-            type(tcopy[3]) == 'string' and set 
+            type(t[3]) == 'string' and set 
             or t.mode 
-            or rawget(xero, 'mode') 
             or ease
         )
+        t.mode = nil
+        local tcopy = copy(t)
         t.plr = 1
         tcopy.plr = 2
         for i = mode == set and 2 or 4, #tcopy, 2 do
