@@ -4,7 +4,8 @@ limitaft
 log
 mirror
 rand
-simpleregions
 simplemults
+simpleregions
 spellcards
+splinehelper
 swap
