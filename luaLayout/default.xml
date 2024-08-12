@@ -316,7 +316,7 @@
                                 props[i] = v 
                             end
                             
-                            if FindValue(resolvePathsFor, i) then print(v, this.__source) props[i] = normalizePath(this.__source .. v) end
+                            if FindValue(resolvePathsFor, i) then props[i] = normalizePath(this.__source .. v) end
                             if FindValue(resolvePathsFor2, i) then props[i] = rootPath .. normalizePath(this.__source .. v) end
                         end
 
