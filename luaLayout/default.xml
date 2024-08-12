@@ -1,0 +1,363 @@
+<!-- sorry!! no syntax highlighting here -->
+<LuaLayout Version = "1.1.0" Author = "Synnwave" 
+    Type = "ActorFrame" 
+    Condition = "(function()
+        --> Utility methods
+        function normalizePath(path)
+            local parts = {}
+            for part in (string.gmatch or string.gfind)(path, '[^/]+') do
+                if part == '..' then
+                    table.remove(parts)
+                elseif part ~= '.' then
+                    table.insert(parts, part)
+                end
+            end
+
+            return '/' .. table.concat(parts, '/')
+        end
+
+        function resolveLuaPath(path, sourcePoint)
+            local source = debug.getinfo(sourcePoint or 2, 'S').source
+            if type(source) == 'string' and string.sub(source, 1, 1) == '@' and string.sub(path, 1, 6) ~= '/Songs' then
+                source = string.sub(source, 3)
+                local filePath = split('/', source) -- Thank you fallback theme
+                filePath = filePath[#filePath]
+                if filePath then source = string.sub(source, 1, -string.len(filePath) - 1) end
+                path = source .. path
+            end
+
+            return normalizePath(path)
+        end
+
+        local function findAndRemove(list, item)
+            local index = FindValue(list, item) -- Thank you once again fallback theme
+            if index then table.remove(list, index) end
+        end
+        ------------------
+
+        --> Constructor
+        if xero.actorDef then return end
+        local actorDef = { classes = {} }
+        xero.actorDef = actorDef
+
+        local actorMetatable = {}
+        do 
+            function actorMetatable:__tostring() 
+                return string.format('[LUA-ACTOR]: %s%s', (self.Name and self.Name .. ', ' or ''), tostring(self.actor or self.__className)) 
+            end
+
+            function actorMetatable:__index(k)
+                if self.__rawClass[k] then 
+                    return function(_, ...) actorMetatable.__queueFunction(self, k, arg) end 
+                end
+                return actorMetatable[k] or rawget(self, k) or self.__props[k] -- probably inefficient
+            end
+
+            function actorMetatable:__newindex(k, v)
+                if not self.__resolved then return rawset(self.__props, k, v) end
+                if k == 'actor' then return rawset(self, k, v) end
+                error('Cannot call __newindex', 3)
+            end
+
+            function actorMetatable:appendChild(child, doNotRemove)
+                if self.__resolved then return end
+                if not doNotRemove then findAndRemove(actorDef.classes, child) end
+                table.insert(self.__children, child)
+                return child
+            end
+
+            function actorMetatable:__queueFunction(methodName, arg)
+                if self.__resolved then return end
+                table.insert(self.__functionQueue, { method = methodName, args = arg })
+            end
+
+            function actorMetatable:__iterChildren(doNotRemove)
+                local allChildren = {}
+                local props = self.__props
+                if props.Children then
+                    for i, child in ipairs(props.Children) do
+                        table.insert(allChildren, child)
+                        self:appendChild(child, doNotRemove)
+                    end
+                    props.Children = {}
+                end
+
+                local propChildren = {}
+                for _, child in ipairs(props) do
+                    if type(child) == 'table' and type(child.__className) == 'string' then
+                        table.insert(allChildren, child)
+                        table.insert(propChildren, child)
+                        self:appendChild(child, doNotRemove) 
+                    end
+                end
+                for _, child in ipairs(propChildren) do 
+                    findAndRemove(props, child)
+                end
+
+                return allChildren
+            end
+        end
+
+        local classConstructorCaches = {}
+        function xero.CreateActor(classType, usingDefTable)
+            if type(classType) ~= 'string' then
+                error(string.format('%s expects a string', (usingDefTable and 'Def' or 'CreateActor')), 3)
+            end
+
+            if classConstructorCaches[classType] then return classConstructorCaches[classType] end
+
+            local actorClass = _G[classType]
+            if not actorClass then error(string.format('class %s isn\'t a valid actor class', classType), 3) end
+            local function thisConstructor(props)
+                if type(props) ~= 'table' then error('curly braces expected when creating an actor', 3) end
+                local self = setmetatable({ 
+                    __className = classType, 
+                    __children = {}, 
+                    __functionQueue = {}, 
+                    __resolved = false,
+                    __props = props,
+                    __source = resolveLuaPath('', 3) .. '/',
+                    __rawClass = actorClass,
+                }, actorMetatable)
+
+                self:__iterChildren(false)
+                table.insert(actorDef.classes, self)
+                return self
+            end
+
+            classConstructorCaches[classType] = thisConstructor
+            return thisConstructor
+        end
+
+        xero.Def = setmetatable({}, { -- alternative method of calling CreateActor
+            __index = function(_, type) return xero.CreateActor(type, true) end,
+        })
+
+        --> Internal Functions
+        -- credits to: https://github.com/ArcticFqx/nitg-theme/blob/master/Lua/geno.lua !
+        -- heavily modified by @synnwave
+
+        local NODES_PER_ACTOR_FRAME = 1000
+        local function log(n) return math.log(n) / math.log(NODES_PER_ACTOR_FRAME) end
+        local function getDepth(t)
+            local depth = math.ceil(log(#t))
+            return depth > 0 and depth or 1
+        end
+
+        local stackMetatable = {
+            push = table.insert,
+            pop = table.remove,
+        }
+        stackMetatable.__index = stackMetatable
+        function stackMetatable.getTop(self) return self[#self] end
+        function stackMetatable.newLayer(self, classes)
+            if not classes.__children then return end
+            self:push {
+                parent = classes,
+                classes = classes.__children,
+                depth = getDepth(classes.__children),
+                width = #classes.__children,
+                currentDepth = 1,
+                index = 0,
+                nodes = {},
+                nodeIndex = 0,
+            }
+        end
+
+        local currentStack
+        function actorDef.condition()
+            local thisLayer = currentStack:getTop()
+            thisLayer.nodes[thisLayer.currentDepth] = thisLayer.nodeIndex
+            if thisLayer.width <= thisLayer.index then return false end
+
+            thisLayer.nodeIndex = thisLayer.nodeIndex + 1
+            return true
+        end
+
+        function actorDef.getType()
+            local thisLayer = currentStack:getTop()
+            if thisLayer.currentDepth < thisLayer.depth then return end
+
+            thisLayer.index = thisLayer.index + 1
+            local thisClass = thisLayer.classes[thisLayer.index]
+            if thisClass.__children and #thisClass.__children > 0 then return end
+            if thisClass.Frag or thisClass.Vert or thisClass.Text or thisClass.Font then return end
+
+            return thisClass.__className
+        end
+
+        function actorDef.getFile()
+            local thisLayer = currentStack:getTop()
+            if thisLayer.currentDepth < thisLayer.depth then
+                thisLayer.currentDepth = thisLayer.currentDepth + 1
+                return 'actors.xml'
+            end
+
+            local thisClass = thisLayer.classes[thisLayer.index]
+            if thisClass.__children and #thisClass.__children > 0 then
+                currentStack:newLayer(thisClass)
+                return 'actors.xml'
+            end
+
+            if thisClass.Frag or thisClass.Vert then return 'shader.xml' end
+            return thisClass.File
+        end
+
+        local propertyDefaults = {
+            Frag = 'nop.frag',
+            Vert = 'nop.vert',
+        }
+        function actorDef.getProperty(property, useLayerBefore)
+            local thisLayer = useLayerBefore and currentStack[#currentStack - 1] or currentStack:getTop()
+            local thisClass = thisLayer.classes[thisLayer.index]
+            if property == 'Font' and thisClass.__className == 'BitmapText' then return thisClass[property] or 'Common Normal' end
+
+            return thisClass[property] or propertyDefaults[property]
+        end
+
+        local function useCommand(actor, command)
+            return function(...)
+                if type(command) == 'string' then
+                    actor:cmd(command)
+                elseif type(command) == 'function' then
+                    command(actor, unpack(arg))
+                end
+            end
+        end
+
+        function actorDef.onInit(actor)
+            if actor:hascommand('Init') then actor:removecommand('Init') end
+
+            local thisLayer = currentStack:getTop()
+            if thisLayer.currentDepth < 1 then
+                currentStack:pop()
+                thisLayer = currentStack:getTop()
+            end
+
+            local thisClass = thisLayer.classes[thisLayer.index]
+            if thisLayer.currentDepth == thisLayer.depth then
+                if thisClass.Frag or thisClass.Vert then actor = actor:GetChildAt(0) end
+                thisClass.actor = actor
+
+                --> Run Queued Functions
+                for _, queued in ipairs(thisClass.__functionQueue) do
+                    local methodSuccess, methodError = pcall(actor[queued.method], actor, unpack(queued.args))
+                    if not methodSuccess then
+                        error(string.format(
+                            'Failed to run actor function \'%s\', \'%s\'\n Please note that if you\'re calling a getter function (eg. GetTexture, GetShader), it will not work.',
+                            queued.method,
+                            methodError),
+                        2)
+                    end
+                end
+
+                --> Make actor functions run instead of queue
+                thisClass.__functionQueue = nil
+                getmetatable(thisClass).__index = function(self, k)
+                    local actorFunction = actor[k]
+                    if type(actorFunction) == 'function' then return function(_, ...) return actorFunction(actor, unpack(arg)) end end
+                    return rawget(self, k) or self.__props[k]
+                end
+
+                --> Bind Commands
+                useCommand(actor, thisClass.InitCommand)()
+                for name, func in pairs(thisClass.__props) do
+                    if name ~= 'InitCommand' and string.sub(name, -7) == 'Command' then
+                        local name = string.sub(name, 1, -8)
+                        if actor:hascommand(name) then actor:removecommand(name) end
+                        actor:addcommand(name, useCommand(actor, func))
+                    end
+                end
+            end
+
+            if thisLayer.nodes[thisLayer.currentDepth] >= NODES_PER_ACTOR_FRAME or thisLayer.width <= thisLayer.index then
+                thisLayer.currentDepth = thisLayer.currentDepth - 1
+            end
+        end
+
+        function actorDef.canContinue()
+            local thisLayer = currentStack:getTop()
+            return thisLayer.width > thisLayer.nodeIndex
+        end
+
+        -- please let me know if i should add any more to these tables!
+        local resolvePathsFor = { 'File', 'Texture' }
+        local resolvePathsFor2 = { 'Frag', 'Vert', 'Font' } -- these paths will be handled differently
+        local rootPath = '../../../../../'
+        local propertyQueues = {
+            Name = 'SetName',
+            Text = 'settext',
+            Texture = 'Load',
+            DrawMode = 'SetDrawMode',
+            Vertices = 'SetNumVertices',
+            FOV = 'fov',
+            VanishX = 'SetVanishX',
+            VanishY = 'SetVanishY',
+        }
+        local propertyAliases = {
+            Shader = 'Frag',
+        }
+        function actorDef.init()
+            --> Resolve actor properties
+            local classesToRemove = {}
+            local function iterClasses(currentClass)
+                for _, this in ipairs(currentClass) do
+                    if not this.__resolved then
+                        local props = this.__props
+                        for _, v in ipairs(this:__iterChildren(true)) do
+                            table.insert(classesToRemove, v)
+                        end
+
+                        for i, v in pairs(props) do 
+                            local i = i
+                            local thisAlias = propertyAliases[i]
+                            if thisAlias then 
+                                i = thisAlias
+                                props[i] = v 
+                            end
+                            
+                            if FindValue(resolvePathsFor, i) then props[i] = normalizePath(this.__source .. v) end
+                            if FindValue(resolvePathsFor2, i) then props[i] = rootPath .. normalizePath(this.__source .. v) end
+                        end
+
+                        --> Queue Functions
+                        for property, methodName in pairs(propertyQueues) do
+                            local actorProp = this[property]
+                            if actorProp ~= nil then 
+                                if type(methodName) == 'string' then 
+                                    this:__queueFunction(methodName, { actorProp }) 
+                                elseif type(methodName) == 'function' then
+                                    methodName(this, actorProp)
+                                end
+                            end
+                        end
+
+                        this.__resolved = true
+                        if this.__children and #this.__children > 0 then
+                            iterClasses(this.__children)
+                        end             
+                    end
+                end
+            end
+            iterClasses(actorDef.classes)
+
+            for _, class in pairs(classesToRemove) do
+                findAndRemove(actorDef.classes, class)
+            end
+            classesToRemove = nil
+
+            --> initialize stack
+            currentStack = setmetatable({}, stackMetatable)
+            currentStack:newLayer { __children = actorDef.classes }
+            return true
+        end
+
+        --> Load Created Actors
+        local success, loadError = pcall(xero.require, 'layout')
+        if not success then error(loadError, 3) end
+        return success
+    end)()">
+    <children>
+        <Layer Condition = "xero(function() return actorDef and actorDef.init() end)()" File = "actors.xml" />
+    <children/>
+<LuaLayout/>

@@ -9,3 +9,4 @@ simpleregions
 spellcards
 splinehelper
 swap
+luaLayout
