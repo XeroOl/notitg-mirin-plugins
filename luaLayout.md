@@ -21,7 +21,7 @@ In `lua/layout.xml`, add the following line to make this plugin work:
 <Layer File = "../plugins/luaLayout" />
 ```
 
-If you don't plan on editing `layout.xml`, you can make the whole file just that one line.
+If you don't plan on editing `layout.xml`, you can make the whole file just this one line.
 
 ## Usage
 
@@ -86,6 +86,8 @@ RecursiveAFT = Def.ActorFrameTexture { InitCommand = aft }
 ```lua
 RecursiveSprite:SetTexture(RecursiveAFT:GetTexture())
 ```
+
+---
 
 ### Example 2 - Player, Combo & Judgment Proxies
 
