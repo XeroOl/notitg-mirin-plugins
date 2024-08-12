@@ -1,0 +1,17 @@
+<ActorFrame>
+    <children>
+        <Layer Condition="xero.actorDef.condition()" Type="@xero.actorDef.getType()" File="@xero.actorDef.getFile()" Font="@xero.actorDef.getProperty('Font')" InitCommand="%xero.actorDef.onInit" />
+        <Layer Condition="xero.actorDef.condition()" Type="@xero.actorDef.getType()" File="@xero.actorDef.getFile()" Font="@xero.actorDef.getProperty('Font')" InitCommand="%xero.actorDef.onInit" />
+        <Layer Condition="xero.actorDef.condition()" Type="@xero.actorDef.getType()" File="@xero.actorDef.getFile()" Font="@xero.actorDef.getProperty('Font')" InitCommand="%xero.actorDef.onInit" />
+        <Layer Condition="xero.actorDef.condition()" Type="@xero.actorDef.getType()" File="@xero.actorDef.getFile()" Font="@xero.actorDef.getProperty('Font')" InitCommand="%xero.actorDef.onInit" />
+        <Layer Condition="xero.actorDef.condition()" Type="@xero.actorDef.getType()" File="@xero.actorDef.getFile()" Font="@xero.actorDef.getProperty('Font')" InitCommand="%xero.actorDef.onInit" />
+        <Layer Condition="xero.actorDef.condition()" Type="@xero.actorDef.getType()" File="@xero.actorDef.getFile()" Font="@xero.actorDef.getProperty('Font')" InitCommand="%xero.actorDef.onInit" />
+        <Layer Condition="xero.actorDef.condition()" Type="@xero.actorDef.getType()" File="@xero.actorDef.getFile()" Font="@xero.actorDef.getProperty('Font')" InitCommand="%xero.actorDef.onInit" />
+        <Layer Condition="xero.actorDef.condition()" Type="@xero.actorDef.getType()" File="@xero.actorDef.getFile()" Font="@xero.actorDef.getProperty('Font')" InitCommand="%xero.actorDef.onInit" />
+        <Layer Condition="xero.actorDef.condition()" Type="@xero.actorDef.getType()" File="@xero.actorDef.getFile()" Font="@xero.actorDef.getProperty('Font')" InitCommand="%xero.actorDef.onInit" />
+        <Layer Condition="xero.actorDef.condition()" Type="@xero.actorDef.getType()" File="@xero.actorDef.getFile()" Font="@xero.actorDef.getProperty('Font')" InitCommand="%xero.actorDef.onInit" />
+
+
+        <Layer Condition="xero.actorDef.canContinue()" File="actors.xml" />
+    </children>
+</ActorFrame>

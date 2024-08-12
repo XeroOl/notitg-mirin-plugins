@@ -1,0 +1,9 @@
+<ActorFrame><children>
+    <Layer 
+        Type="@xero.actorDef.getProperty('__className')" 
+        Frag="@xero.actorDef.getProperty('Frag')" 
+        Vert="@xero.actorDef.getProperty('Vert')"  
+        File="@xero.actorDef.getProperty('File')"
+        Font="@xero.actorDef.getProperty('Font')"
+    />
+</children></ActorFrame>
