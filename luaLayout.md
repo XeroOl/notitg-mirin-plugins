@@ -75,10 +75,10 @@ To add a child to a ActorFrame there are two methods to do so.
 (in your `lua/layout.lua` script)
 
 ```lua
-RecursiveSprite = Def.Sprite { InitCommand = sprite } -- you can assign actors to variables! (you can also use 'Name=' aswell, use whatever one you like!)
+RecursiveSprite = Def.Sprite { OnCommand = sprite } -- you can assign actors to variables! (you can also use 'Name=' aswell, use whatever one you like!)
 RecursiveSprite:diffusealpha(0.5) -- you can call setter functions in this script! (note: please read the Notes/Drawbacks of this plugin)
 RecursiveSprite:zoom(1.1)
-RecursiveAFT = Def.ActorFrameTexture { InitCommand = aft }
+RecursiveAFT = Def.ActorFrameTexture { OnCommand = aft }
 ```
 
 (in your `lua/mods.lua` script)
@@ -111,7 +111,7 @@ end
 
 * Actor setter functions (eg. diffuse, xy, ...) can be called in your `layout.lua` script and will be ran once the actor has been created, but getter functions (eg. GetTexture, GetShader, ...) can not be called.
 
-    It is recommended to call functions in your `mods.lua` script instead, or by using InitCommand when defining your actor.
+    It is recommended to call functions in your `mods.lua` script instead, or by using OnCommand when defining your actor.
 
 * ActorScrollers aren't supported because they do not run Lua functions for configuration at all.
 

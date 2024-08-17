@@ -14,6 +14,7 @@ This is the repository for plugins that are compatible with the [notitg-mirin](h
 * [splinehelper](splinehelper.md) by [ArbitraryRage](https://github.com/Arbitrary-Rage/)
 * [swap](swap.md) by [XeroOl](https://github.com/XeroOl/)
 * [luaLayout](luaLayout.md) by [Synnwave](https://github.com/synnwave/)
+* [libraries](libraries.md) by [Synnwave](https://github.com/synnwave/)
 
 ## Installing a plugin
 * Create a `/plugins/` folder inside the song folder (i.e., `Songs/Group name/Song name/plugins`)

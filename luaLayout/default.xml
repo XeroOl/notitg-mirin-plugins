@@ -1,5 +1,5 @@
 <!-- sorry!! no syntax highlighting here -->
-<LuaLayout Version = "1.1.0" Author = "Synnwave" 
+<LuaLayout Version = "1.1.1" Author = "Synnwave" 
     Type = "ActorFrame" 
     Condition = "(function()
         --> Utility methods
@@ -50,7 +50,7 @@
                 if self.__rawClass[k] then 
                     return function(_, ...) actorMetatable.__queueFunction(self, k, arg) end 
                 end
-                return actorMetatable[k] or rawget(self, k) or self.__props[k] -- probably inefficient
+                return actorMetatable[k] or rawget(self, k) or rawget(self, '__props')[k] -- probably inefficient
             end
 
             function actorMetatable:__newindex(k, v)
@@ -61,6 +61,7 @@
 
             function actorMetatable:appendChild(child, doNotRemove)
                 if self.__resolved then return end
+                if not self.__isActorFrame then return child end
                 if not doNotRemove then findAndRemove(actorDef.classes, child) end
                 table.insert(self.__children, child)
                 return child
@@ -74,20 +75,27 @@
             function actorMetatable:__iterChildren(doNotRemove)
                 local allChildren = {}
                 local props = self.__props
+                local isActorFrame = self.__isActorFrame
+
                 if props.Children then
-                    for i, child in ipairs(props.Children) do
-                        table.insert(allChildren, child)
-                        self:appendChild(child, doNotRemove)
+                    if isActorFrame then
+                        for i, child in ipairs(props.Children) do
+                            table.insert(allChildren, child)
+                            self:appendChild(child, doNotRemove)
+                        end
                     end
+
                     props.Children = {}
                 end
 
                 local propChildren = {}
                 for _, child in ipairs(props) do
                     if type(child) == 'table' and type(child.__className) == 'string' then
-                        table.insert(allChildren, child)
                         table.insert(propChildren, child)
-                        self:appendChild(child, doNotRemove) 
+                        if isActorFrame then
+                            table.insert(allChildren, child)
+                            self:appendChild(child, doNotRemove) 
+                        end
                     end
                 end
                 for _, child in ipairs(propChildren) do 
@@ -98,6 +106,7 @@
             end
         end
 
+        local actorAliases = { Quad = 'Sprite' }
         local classConstructorCaches = {}
         function xero.CreateActor(classType, usingDefTable)
             if type(classType) ~= 'string' then
@@ -106,8 +115,10 @@
 
             if classConstructorCaches[classType] then return classConstructorCaches[classType] end
 
-            local actorClass = _G[classType]
-            if not actorClass then error(string.format('class %s isn\'t a valid actor class', classType), 3) end
+            local actorClass = _G[classType] or _G[actorAliases[classType]]
+            if not (actorClass and actorClass['SetName'] ~= nil) then error(string.format('class %s isn\'t a valid actor class', classType), 3) end
+
+            local isActorFrame = actorClass['GetChild'] ~= nil
             local function thisConstructor(props)
                 if type(props) ~= 'table' then error('curly braces expected when creating an actor', 3) end
                 local self = setmetatable({ 
@@ -118,6 +129,7 @@
                     __props = props,
                     __source = resolveLuaPath('', 3) .. '/',
                     __rawClass = actorClass,
+                    __isActorFrame = isActorFrame,
                 }, actorMetatable)
 
                 self:__iterChildren(false)
@@ -180,7 +192,7 @@
 
             thisLayer.index = thisLayer.index + 1
             local thisClass = thisLayer.classes[thisLayer.index]
-            if thisClass.__children and #thisClass.__children > 0 then return end
+            if thisClass.__isActorFrame and (thisClass.__children and #thisClass.__children > 0) then return end
             if thisClass.Frag or thisClass.Vert or thisClass.Text or thisClass.Font then return end
 
             return thisClass.__className
@@ -194,7 +206,7 @@
             end
 
             local thisClass = thisLayer.classes[thisLayer.index]
-            if thisClass.__children and #thisClass.__children > 0 then
+            if thisClass.__isActorFrame and (thisClass.__children and #thisClass.__children > 0) then
                 currentStack:newLayer(thisClass)
                 return 'actors.xml'
             end
@@ -207,8 +219,8 @@
             Frag = 'nop.frag',
             Vert = 'nop.vert',
         }
-        function actorDef.getProperty(property, useLayerBefore)
-            local thisLayer = useLayerBefore and currentStack[#currentStack - 1] or currentStack:getTop()
+        function actorDef.getProperty(property, useStackBefore)
+            local thisLayer = useStackBefore and currentStack[#currentStack - 1] or currentStack:getTop()
             local thisClass = thisLayer.classes[thisLayer.index]
             if property == 'Font' and thisClass.__className == 'BitmapText' then return thisClass[property] or 'Common Normal' end
 
@@ -249,14 +261,6 @@
                             methodError),
                         2)
                     end
-                end
-
-                --> Make actor functions run instead of queue
-                thisClass.__functionQueue = nil
-                getmetatable(thisClass).__index = function(self, k)
-                    local actorFunction = actor[k]
-                    if type(actorFunction) == 'function' then return function(_, ...) return actorFunction(actor, unpack(arg)) end end
-                    return rawget(self, k) or self.__props[k]
                 end
 
                 --> Bind Commands
@@ -324,7 +328,7 @@
                         for property, methodName in pairs(propertyQueues) do
                             local actorProp = this[property]
                             if actorProp ~= nil then 
-                                if type(methodName) == 'string' then 
+                                if type(methodName) == 'string' and this.__rawClass[methodName] ~= nil then 
                                     this:__queueFunction(methodName, { actorProp }) 
                                 elseif type(methodName) == 'function' then
                                     methodName(this, actorProp)
@@ -345,6 +349,30 @@
                 findAndRemove(actorDef.classes, class)
             end
             classesToRemove = nil
+
+            --> since we've resolved the properties, replace __index
+            function actorMetatable:__index(k)
+                local actor = rawget(self, 'actor')
+                if actor then
+                    local actorFunction = actor[k]
+                    if type(actorFunction) == 'function' then 
+                        return function(_, ...) return actorFunction(actor, unpack(arg)) end 
+                    end
+                end 
+
+                return rawget(self, k) or rawget(self, '__props')[k]
+            end
+
+            --> let's also set __call
+            function actorMetatable:__call(k)
+                local actor = self.actor
+                if self.__isActorFrame then
+                    if type(k) == 'string' then return actor:GetChild(k) end
+                    if type(k) == 'number' then return actor:GetChildAt(k) end
+                end
+
+                return actor
+            end
 
             --> initialize stack
             currentStack = setmetatable({}, stackMetatable)
