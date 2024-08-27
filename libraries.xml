@@ -1,4 +1,4 @@
-<Libraries Author = "Synnwave" Version = "1.0.0" LoadCommand = "%xero(function()
+<Libraries Author = "Synnwave" Version = "1.1.0" LoadCommand = "%xero(function()
     --> all libraries (except the coord library. sorry but i did not feel like doing math 😭) made by synnwave!!
     --> credits to egomoose for their coord library implementation https://github.com/EgoMoose/Articles/blob/master/CFrames/cframe%20class.lua
     --> these libraries are inspired by roblox's libraries Lol... they're really useful though!!
@@ -260,11 +260,14 @@
         function vecMeta:__call() return self.x, self.y end
         function vecMeta:__tostring() return format('vec2[%s, %s]', self()) end
         function vecMeta:__div(other)
-            if type(self) == 'number' then self, other = other, self end -- invert values
             if type(other) == 'number' then
                 return vec2new((self.x / other), (self.y / other))
             elseif checkClassMeta(other, vecMeta) then
-                return vec2new((self.x / other.x), (self.y / other.y))
+                if type(self) == 'number' then
+                    return vec2new((self / other.x), (self / other.y))
+                else
+                    return vec2new((self.x / other.x), (self.y / other.y))
+                end
             end
             error('invalid vec3.__div parameter', 2)
         end
@@ -278,13 +281,23 @@
             error('invalid vec3.__mul parameter', 2)
         end
         function vecMeta:__add(other)
-            if type(self) == 'number' then self, other = other, self end -- invert values
-            if checkClassMeta(other, vecMeta) then return vec2new((self.x + other.x), (self.y + other.y)) end
+            if checkClassMeta(other, vecMeta) then
+                if type(self) == 'number' then
+                    return vec2new((self + other.x), (self + other.y))
+                else
+                    return vec2new((self.x + other.x), (self.y + other.y))
+                end
+            end
             error('invalid vec3.__add parameter', 2)
         end
         function vecMeta:__sub(other)
-            if type(self) == 'number' then self, other = other, self end -- invert values
-            if checkClassMeta(other, vecMeta) then return vec2new((self.x - other.x), (self.y - other.y)) end
+            if checkClassMeta(other, vecMeta) then
+                if type(self) == 'number' then
+                    return vec2new((self - other.x), (self - other.y))
+                else
+                    return vec2new((self.x - other.x), (self.y - other.y))
+                end
+            end
             error('invalid vec3.__sub parameter', 2)
         end
         function vecMeta:__unm()
@@ -350,11 +363,14 @@
             return format('vec3[%s, %s, %s]', self())
         end
         function vecMeta:__div(other)
-            if type(self) == 'number' then self, other = other, self end -- invert values
             if type(other) == 'number' then
                 return vec3new(self.x / other, self.y / other, self.z / other)
             elseif checkClassMeta(other, vecMeta) then
-                return vec3new(self.x / other.x, self.y / other.y, self.z / other.z)
+                if type(self) == 'number' then
+                    return vec3new(self / other.x, self / other.y, self / other.z)
+                else
+                    return vec3new(self.x / other.x, self.y / other.y, self.z / other.z)
+                end
             end
             error('invalid vec3.__div parameter', 2)
         end
@@ -368,16 +384,22 @@
             error('invalid vec3.__mul parameter', 2)
         end
         function vecMeta:__add(other)
-            if type(self) == 'number' then self, other = other, self end -- invert values
             if checkClassMeta(other, vecMeta) then
-                return vec3new(self.x + other.x, self.y + other.y, self.z + other.z)
+                if type(self) == 'number' then
+                    return vec3new(self + other.x, self + other.y, self + other.z)
+                else
+                    return vec3new(self.x + other.x, self.y + other.y, self.z + other.z)
+                end
             end
             error('invalid vec3.__add parameter', 2)
         end
         function vecMeta:__sub(other)
-            if type(self) == 'number' then self, other = other, self end -- invert values
             if checkClassMeta(other, vecMeta) then
-                return vec3new(self.x - other.x, self.y - other.y, self.z - other.z)
+                if type(self) == 'number' then
+                    return vec3new(self - other.x, self - other.y, self - other.z)
+                else
+                    return vec3new(self.x - other.x, self.y - other.y, self.z - other.z)
+                end
             end
             error('invalid vec3.__sub parameter', 2)
         end
@@ -455,11 +477,14 @@
             return format('vec4[%s, %s, %s, %s]', self())
         end
         function vecMeta:__div(other)
-            if type(self) == 'number' then self, other = other, self end -- invert values
             if type(other) == 'number' then
                 return vec4new(self.x / other, self.y / other, self.w / other, self.h / other)
             elseif checkClassMeta(other, vecMeta) then
-                return vec4new(self.x / other.x, self.y / other.y, self.w / other.w, self.h / other.h)
+                if type(self) == 'number' then
+                    return vec4new(self / other.x, self / other.y, self / other.w, self / other.h)
+                else
+                    return vec4new(self.x / other.x, self.y / other.y, self.w / other.w, self.h / other.h)
+                end
             end
             error('invalid vec4.__div parameter', 2)
         end
@@ -473,16 +498,22 @@
             error('invalid vec4.__mul parameter', 2)
         end
         function vecMeta:__add(other)
-            if type(self) == 'number' then self, other = other, self end -- invert values
             if checkClassMeta(other, vecMeta) then
-                return vec4new(self.x + other.x, self.y + other.y, self.w + other.w, self.h + other.h)
+                if type(self) == 'number' then
+                    return vec4new(self + other.x, self + other.y, self + other.w, self + other.h)
+                else
+                    return vec4new(self.x + other.x, self.y + other.y, self.w + other.w, self.h + other.h)
+                end
             end
             error('invalid vec4.__add parameter', 2)
         end
         function vecMeta:__sub(other)
-            if type(self) == 'number' then self, other = other, self end -- invert values
             if checkClassMeta(other, vecMeta) then
-                return vec4new(self.x - other.x, self.y - other.y, self.w - other.w, self.h - other.h)
+                if type(self) == 'number' then
+                    return vec4new(self - other.x, self - other.y, self - other.w, self - other.h)
+                else
+                    return vec4new(self.x - other.x, self.y - other.y, self.w - other.w, self.h - other.h)
+                end
             end
             error('invalid vec4.__sub parameter', 2)
         end
@@ -642,7 +673,6 @@
         local vec3Meta = classMetatables.vec3
         local vec3new = xero.vec3.new
         local vec3yAxis = xero.vec3.yAxis
-        local vec3xAxis = xero.vec3.yAxis
         local coordMeta = { __type = 'coord' }
 
         --> metamethods
@@ -775,7 +805,7 @@
             if axis:dot(axis) > 0 then
                 return axis.unit, theta
             else
-                return vec3xAxis, theta
+                return vec3new(1), theta
             end
         end
 
