@@ -13,7 +13,7 @@
 	-- rand.float(min, max) returns a float x where min <= x < max
 	function rand.float(a, b)
 		state = state + 1
-		local r = math.abs((math.sin(632459.86 * state) * 1023341.55) % 1)
+		local r = math.abs(math.mod(math.sin(632459.86 * state) * 1023341.55, 1))
 		if not a then
 			return r
 		elseif not b then
